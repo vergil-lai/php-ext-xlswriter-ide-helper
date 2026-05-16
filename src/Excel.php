@@ -21,8 +21,10 @@ class Excel
     const SKIP_NONE = 0x00;
     const SKIP_EMPTY_ROW = 0x01;
     const SKIP_EMPTY_CELLS = 0x02;
-    const SKIP_HIDDEN_ROW = 0x08;
-    const SKIP_EMPTY_VALUE = 0X100;
+    const SKIP_HIDDEN_ROW = 0x04;
+    const SKIP_EMPTY_VALUE = 0x100;
+    const SKIP_MERGED_FOLLOW = 0x200;
+    const FORMULA_VERBOSE = 0x400;
 
     const GRIDLINES_HIDE_ALL = 0;
     const GRIDLINES_SHOW_SCREEN = 1;
@@ -69,6 +71,10 @@ class Excel
     const PAPER_FANFOLD = 39;
     const PAPER_GERMAN_STD_FANFOLD = 40;
     const PAPER_GERMAN_LEGAL_FANFOLD = 41;
+
+    const COMMENT_DISPLAY_DEFAULT = 0;
+    const COMMENT_DISPLAY_HIDDEN = 1;
+    const COMMENT_DISPLAY_VISIBLE = 2;
 
     /**
      * Excel constructor.
@@ -367,6 +373,25 @@ class Excel
     }
 
     /**
+     * Insert image from a binary buffer
+     *
+     * Options keys: x_offset, y_offset, x_scale, y_scale,
+     *               description, url, tip, decorative,
+     *               object_position, image_name (used as the embedded filename).
+     *
+     * @param int    $row
+     * @param int    $column
+     * @param string $bytes
+     * @param array  $options
+     *
+     * @return $this
+     */
+    public function insertImageBuffer(int $row, int $column, string $bytes, array $options = []): self
+    {
+        return $this;
+    }
+
+    /**
      * Insert Formula on the cell
      *
      * @param int           $row
@@ -395,6 +420,27 @@ class Excel
      * @author viest
      */
     public function insertComment(int $row, int $column, string $comment): self
+    {
+        return $this;
+    }
+
+    /**
+     * Insert comment with options on the cell
+     *
+     * Supported option keys:
+     *   author, visible (Excel::COMMENT_DISPLAY_*),
+     *   color, font_name, font_size, font_family,
+     *   width, height, x_scale, y_scale,
+     *   x_offset, y_offset, start_row, start_col.
+     *
+     * @param int    $row
+     * @param int    $column
+     * @param string $text
+     * @param array  $options
+     *
+     * @return $this
+     */
+    public function insertCommentOpt(int $row, int $column, string $text, array $options = []): self
     {
         return $this;
     }
@@ -677,6 +723,227 @@ class Excel
     }
 
     /**
+     * Set the worksheet header text.
+     *
+     * Supported option keys: margin, image_left, image_center, image_right.
+     *
+     * @param string $value
+     * @param array  $options
+     *
+     * @return $this
+     */
+    public function setHeader(string $value, array $options = []): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set the worksheet footer text.
+     *
+     * Supported option keys: margin, image_left, image_center, image_right.
+     *
+     * @param string $value
+     * @param array  $options
+     *
+     * @return $this
+     */
+    public function setFooter(string $value, array $options = []): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set rows to repeat at the top of each printed page.
+     *
+     * @param string $range e.g. "A1:A1" or "1:1"
+     *
+     * @return $this
+     */
+    public function repeatRows(string $range): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set columns to repeat at the left of each printed page.
+     *
+     * @param string $range e.g. "A:A"
+     *
+     * @return $this
+     */
+    public function repeatColumns(string $range): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set the worksheet print area.
+     *
+     * @param string $range e.g. "A1:D20"
+     *
+     * @return $this
+     */
+    public function printArea(string $range): self
+    {
+        return $this;
+    }
+
+    /**
+     * Insert horizontal page breaks.
+     *
+     * @param int[] $breaks list of row indices where a break should occur
+     *
+     * @return $this
+     */
+    public function horizontalPageBreaks(array $breaks): self
+    {
+        return $this;
+    }
+
+    /**
+     * Insert vertical page breaks.
+     *
+     * @param int[] $breaks list of column indices where a break should occur
+     *
+     * @return $this
+     */
+    public function verticalPageBreaks(array $breaks): self
+    {
+        return $this;
+    }
+
+    /**
+     * Fit the printed output to a fixed number of pages.
+     *
+     * @param int $width  number of pages wide
+     * @param int $height number of pages tall
+     *
+     * @return $this
+     */
+    public function fitToPages(int $width, int $height): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set the worksheet tab color.
+     *
+     * @param int $rgb e.g. 0xFF0000 or one of Format::COLOR_*
+     *
+     * @return $this
+     */
+    public function setTabColor(int $rgb): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set document properties.
+     *
+     * Supported keys: title, subject, author, manager, company,
+     *                 category, keywords, comments, status, hyperlink_base.
+     *
+     * @param array $props
+     *
+     * @return $this
+     */
+    public function setProperties(array $props): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set a single custom document property.
+     *
+     * @param string                  $name
+     * @param string|int|float|bool   $value
+     * @param string|null             $type one of: "string", "number", "int", "bool", "date"
+     *
+     * @return $this
+     */
+    public function setCustomProperty(string $name, $value, string $type = NULL): self
+    {
+        return $this;
+    }
+
+    /**
+     * Define a workbook- or worksheet-scoped name.
+     *
+     * @param string      $name
+     * @param string      $formula
+     * @param string|null $scopeSheet null for workbook scope
+     *
+     * @return $this
+     */
+    public function defineName(string $name, string $formula, string $scopeSheet = NULL): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set the worksheet background image from a file path.
+     *
+     * @param string $path
+     *
+     * @return $this
+     */
+    public function setBackgroundImage(string $path): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set the worksheet background image from a binary buffer.
+     *
+     * @param string $bytes
+     *
+     * @return $this
+     */
+    public function setBackgroundImageBuffer(string $bytes): self
+    {
+        return $this;
+    }
+
+    /**
+     * Apply a conditional format to a single cell.
+     *
+     * @param string                $range              e.g. "A1"
+     * @param ConditionalFormat|resource $conditionalFormat
+     *
+     * @return $this
+     */
+    public function conditionalFormatCell(string $range, $conditionalFormat): self
+    {
+        return $this;
+    }
+
+    /**
+     * Apply a conditional format to a range of cells.
+     *
+     * @param string                $range              e.g. "A1:B10"
+     * @param ConditionalFormat|resource $conditionalFormat
+     *
+     * @return $this
+     */
+    public function conditionalFormatRange(string $range, $conditionalFormat): self
+    {
+        return $this;
+    }
+
+    /**
+     * Add an Excel table to the worksheet.
+     *
+     * @param string     $range   e.g. "A1:D5"
+     * @param Table|null $options
+     *
+     * @return $this
+     */
+    public function addTable(string $range, $options = NULL): self
+    {
+        return $this;
+    }
+
+    /**
      * Open xlsx file
      *
      * @param string $fileName
@@ -715,6 +982,16 @@ class Excel
      * @author viest
      */
     public function sheetList(): array
+    {
+        return [];
+    }
+
+    /**
+     * Sheet list with meta information (visibility, dimensions, etc.)
+     *
+     * @return array
+     */
+    public function sheetListWithMeta(): array
     {
         return [];
     }
@@ -822,6 +1099,216 @@ class Excel
      * @author viest
      */
     public function nextRow(array $types = NULL): array
+    {
+        return [];
+    }
+
+    /**
+     * Read the next row, returning formulas instead of cached values.
+     *
+     * @return array
+     */
+    public function nextRowWithFormula(): array
+    {
+        return [];
+    }
+
+    /**
+     * Read the next row as rich-text segments.
+     *
+     * @return array
+     */
+    public function nextRowRich(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the merged cell ranges of the active sheet.
+     *
+     * @return array
+     */
+    public function getMergedCells(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get hyperlinks defined on the active sheet.
+     *
+     * @return array
+     */
+    public function getHyperlinks(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get sheet protection settings for the active sheet.
+     *
+     * @return array
+     */
+    public function getSheetProtection(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get row options (height, hidden, outline level, ...) for a row.
+     *
+     * @param int $row 1-based row index
+     *
+     * @return array
+     */
+    public function getRowOptions(int $row): array
+    {
+        return [];
+    }
+
+    /**
+     * Get column options (width, hidden, outline level, ...) for a column.
+     *
+     * @param string $colA1 column letter, e.g. "A"
+     *
+     * @return array
+     */
+    public function getColumnOptions(string $colA1): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the default row height of the active sheet.
+     *
+     * @return float
+     */
+    public function getDefaultRowHeight(): float
+    {
+        return 0.0;
+    }
+
+    /**
+     * Get the default column width of the active sheet.
+     *
+     * @return float
+     */
+    public function getDefaultColumnWidth(): float
+    {
+        return 0.0;
+    }
+
+    /**
+     * Get workbook- and sheet-scoped defined names.
+     *
+     * @return array
+     */
+    public function getDefinedNames(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get data validations applied on the active sheet.
+     *
+     * @return array
+     */
+    public function getDataValidations(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the active auto-filter on the active sheet, if any.
+     *
+     * @return array
+     */
+    public function getAutoFilter(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the page setup metadata of the active sheet
+     * (paper, margins, scaling, orientation, ...).
+     *
+     * @return array
+     */
+    public function getPageSetup(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get conditional formats defined on the active sheet.
+     *
+     * @return array
+     */
+    public function getConditionalFormats(): array
+    {
+        return [];
+    }
+
+    /**
+     * Iterate over the comments on a sheet.
+     *
+     * The callback receives (int $row, int $col, string $text, array $meta).
+     *
+     * @param callable    $callable
+     * @param string|null $sheet sheet name, null for the active sheet
+     *
+     * @return void
+     */
+    public function iterateComments(callable $callable, string $sheet = NULL)
+    {
+        //
+    }
+
+    /**
+     * Iterate over the embedded charts on a sheet.
+     *
+     * @param callable    $callable
+     * @param string|null $sheet sheet name, null for the active sheet
+     *
+     * @return void
+     */
+    public function iterateCharts(callable $callable, string $sheet = NULL)
+    {
+        //
+    }
+
+    /**
+     * Iterate over the embedded images on a sheet.
+     *
+     * @param callable    $callback
+     * @param string|null $sheetName sheet name, null for the active sheet
+     *
+     * @return void
+     */
+    public function iterateImages(callable $callback, string $sheetName = NULL)
+    {
+        //
+    }
+
+    /**
+     * Get the format definition for a given style id.
+     *
+     * @param int $styleId
+     *
+     * @return array
+     */
+    public function getStyleFormat(int $styleId): array
+    {
+        return [];
+    }
+
+    /**
+     * Parse a formula string into an abstract syntax tree.
+     *
+     * @param string $formula
+     *
+     * @return array
+     */
+    public static function getFormulaAst(string $formula): array
     {
         return [];
     }

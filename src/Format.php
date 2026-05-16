@@ -66,6 +66,7 @@ class Format
     const PATTERN_GRAY_125 = 0x00;
     const PATTERN_GRAY_0625 = 0x00;
 
+    const BORDER_NONE = 0x00;
     const BORDER_THIN = 0x00;
     const BORDER_MEDIUM = 0x00;
     const BORDER_DASHED = 0x00;
@@ -127,7 +128,7 @@ class Format
     }
 
     /**
-     * Cells border
+     * Cells border (applied to the four sides at once)
      *
      * @param int $style const BORDER_***
      *
@@ -136,6 +137,48 @@ class Format
      * @author viest
      */
     public function border(int $style): self
+    {
+        return $this;
+    }
+
+    /**
+     * Cells border styles per side
+     *
+     * @param int $top    const BORDER_***
+     * @param int $right  const BORDER_***
+     * @param int $bottom const BORDER_***
+     * @param int $left   const BORDER_***
+     *
+     * @return Format
+     */
+    public function borderOfTheFourSides(int $top, int $right, int $bottom, int $left): self
+    {
+        return $this;
+    }
+
+    /**
+     * Cells border color (applied to the four sides at once)
+     *
+     * @param int $color const COLOR_*** or RGB
+     *
+     * @return Format
+     */
+    public function borderColor(int $color): self
+    {
+        return $this;
+    }
+
+    /**
+     * Cells border colors per side
+     *
+     * @param int $topColor    const COLOR_*** or RGB
+     * @param int $rightColor  const COLOR_*** or RGB
+     * @param int $bottomColor const COLOR_*** or RGB
+     * @param int $leftColor   const COLOR_*** or RGB
+     *
+     * @return Format
+     */
+    public function borderColorOfTheFourSides(int $topColor, int $rightColor, int $bottomColor, int $leftColor): self
     {
         return $this;
     }
@@ -246,6 +289,50 @@ class Format
      * @author viest
      */
     public function unlocked(): self
+    {
+        return $this;
+    }
+
+    /**
+     * Locked
+     *
+     * @return $this
+     */
+    public function locked(): self
+    {
+        return $this;
+    }
+
+    /**
+     * Hidden (hide the formula but still show the result)
+     *
+     * @return $this
+     */
+    public function hidden(): self
+    {
+        return $this;
+    }
+
+    /**
+     * Cell text rotation in degrees (-90 .. 90, or 270 for stacked).
+     *
+     * @param int $angle
+     *
+     * @return $this
+     */
+    public function rotation(int $angle): self
+    {
+        return $this;
+    }
+
+    /**
+     * Cell indent level.
+     *
+     * @param int $level
+     *
+     * @return $this
+     */
+    public function indent(int $level): self
     {
         return $this;
     }

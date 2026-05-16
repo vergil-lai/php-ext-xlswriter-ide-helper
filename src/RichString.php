@@ -12,10 +12,10 @@ class RichString
     /**
      * RichString construct
      *
-     * @param string   $str
-     * @param resource $formatHandle
+     * @param string        $str
+     * @param resource|null $formatHandle
      */
-    public function __construct(string $str, $formatHandle)
+    public function __construct(string $str, $formatHandle = NULL)
     {
         //
     }
