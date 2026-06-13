@@ -76,6 +76,12 @@ class Excel
     const COMMENT_DISPLAY_HIDDEN = 1;
     const COMMENT_DISPLAY_VISIBLE = 2;
 
+    const OBJECT_POSITION_DEFAULT = 0;
+    const OBJECT_MOVE_AND_SIZE = 1;
+    const OBJECT_MOVE_DONT_SIZE = 2;
+    const OBJECT_DONT_MOVE_DONT_SIZE = 3;
+    const OBJECT_MOVE_AND_SIZE_AFTER = 4;
+
     /**
      * Excel constructor.
      *
@@ -271,11 +277,13 @@ class Excel
     /**
      * Insert data on the cell
      *
-     * @param int               $row
-     * @param int               $column
-     * @param int|string|double $data
-     * @param string|null       $format
-     * @param resource|null     $formatHandle
+     * Boolean values are written as native xlsx booleans (type="b").
+     *
+     * @param int                       $row
+     * @param int                       $column
+     * @param int|string|double|bool    $data
+     * @param string|null               $format
+     * @param resource|null             $formatHandle
      *
      * @return Excel
      *
@@ -392,6 +400,29 @@ class Excel
     }
 
     /**
+     * Insert image on the cell with advanced anchoring / styling options.
+     *
+     * Supported option keys (all optional):
+     *   x_offset / y_offset  (int,    pixels from the top-left of the anchor cell)
+     *   x_scale  / y_scale   (float,  scale factor; 1.0 = original size)
+     *   description          (string, alt text; "" suppresses it)
+     *   decorative           (bool,   mark as decorative for screen readers)
+     *   url / tip            (string, hyperlink target + mouseover tip)
+     *   object_position      (int,    Excel::OBJECT_POSITION_* / OBJECT_MOVE_* constant)
+     *
+     * @param int    $row
+     * @param int    $column
+     * @param string $imagePath
+     * @param array  $options
+     *
+     * @return $this
+     */
+    public function insertImageOpt(int $row, int $column, string $imagePath, array $options = []): self
+    {
+        return $this;
+    }
+
+    /**
      * Insert Formula on the cell
      *
      * @param int           $row
@@ -404,6 +435,44 @@ class Excel
      * @author viest
      */
     public function insertFormula(int $row, int $column, string $formula, $formatHandle = NULL): self
+    {
+        return $this;
+    }
+
+    /**
+     * Insert a dynamic array formula on the cell.
+     *
+     * Dynamic array functions (UNIQUE, FILTER, SORT, SEQUENCE, XLOOKUP, ...)
+     * require special XML output that insertFormula() does not produce.
+     *
+     * @param int           $row
+     * @param int           $column
+     * @param string        $formula
+     * @param resource|null $formatHandle
+     *
+     * @return $this
+     */
+    public function insertDynamicFormula(int $row, int $column, string $formula, $formatHandle = NULL): self
+    {
+        return $this;
+    }
+
+    /**
+     * Insert a dynamic array formula spanning a range.
+     *
+     * Emits the formula with t="array" and the given ref range so that Excel
+     * 365 evaluates it as a spill range.
+     *
+     * @param int           $firstRow
+     * @param int           $firstColumn
+     * @param int           $lastRow
+     * @param int           $lastColumn
+     * @param string        $formula
+     * @param resource|null $formatHandle
+     *
+     * @return $this
+     */
+    public function insertDynamicArrayFormula(int $firstRow, int $firstColumn, int $lastRow, int $lastColumn, string $formula, $formatHandle = NULL): self
     {
         return $this;
     }
@@ -507,6 +576,28 @@ class Excel
     }
 
     /**
+     * Enable automatic column-width sizing for the active worksheet.
+     *
+     * Every written cell contributes its estimated display width to a
+     * per-column maximum; the tracked widths are applied at output() time
+     * (and flushed when switching sheets). Call autoSize() BEFORE writing the
+     * data it should size, otherwise the writes are not tracked. Widths are
+     * estimates from character counts (wide / CJK code points count as 2) and
+     * cannot exactly match Excel's own auto-fit.
+     *
+     * Pass an A1 range such as "A:Z" or "A1:J100" to restrict sizing to a
+     * subset of columns; omit it to size every column.
+     *
+     * @param string|null $range
+     *
+     * @return $this
+     */
+    public function autoSize(string $range = NULL): self
+    {
+        return $this;
+    }
+
+    /**
      * Set row cells height or format
      *
      * @param string        $range
@@ -577,6 +668,21 @@ class Excel
      * @return $this
      */
     public function defaultRowOptions(int $level = 0, bool $collapsed = false, bool $hidden = false): self
+    {
+        return $this;
+    }
+
+    /**
+     * Configure the worksheet outline / grouping display settings.
+     *
+     * @param bool $visible   show the outline symbols
+     * @param bool $below     place summary rows below the detail rows
+     * @param bool $right     place summary columns to the right of the detail
+     * @param bool $autoStyle use automatic outline styles
+     *
+     * @return $this
+     */
+    public function outlineSettings(bool $visible = true, bool $below = true, bool $right = true, bool $autoStyle = false): self
     {
         return $this;
     }
