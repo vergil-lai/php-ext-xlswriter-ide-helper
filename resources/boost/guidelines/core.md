@@ -20,5 +20,6 @@ These guidelines apply when generating Laravel code that uses
 - The main namespace is `Vtiful\Kernel`.
 - `Excel::__construct()` requires an array config. In Laravel examples, pass at least `['path' => storage_path('app/exports')]`.
 - `output()` returns the generated file path.
-- Format, validation, chart, table, rich string, and conditional-format helpers are fluent builders whose `toResource()` values can be passed into `Excel` methods.
+- `Format`, `Validation`, and `Chart` are fluent builders whose `toResource()` values can be passed into `Excel` methods.
+- `Table`, `RichString`, and `ConditionalFormat` are passed directly as objects or arrays to the relevant `Excel` methods.
 - Do not invent APIs from PhpSpreadsheet, Laravel Excel, or Symfony Spreadsheet. Check the helper stubs and the xlswriter docs first.
